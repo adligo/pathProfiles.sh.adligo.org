@@ -1,0 +1,61 @@
+#!/bin/bash
+
+verbose=false
+# Parse the command line arguments
+# covered here https://medium.com/@Drew_Stokes/bash-argument-parsing-54f3b81a6a8f
+while (( "$#" )); do
+  #echo "$1"
+  case "$1" in
+    -p | --profile) profile="$2"; shift 2 ;;
+    -h | --help) help=true; shift 1  ;;
+    -t | --trial) trial=true; shift 1 ;;
+    -v | --verbose) verbose=true; shift 1 ;;
+  esac
+done
+
+if [[ $help == "true" ]]; then
+  echo This is a customizable script for maintaining your PATH in GitBash Terminals in a sane way
+  echo which allows resetting of parts of the PATH to different variables.
+  echo 
+  echo You should start by adding all of your bash environment variables to your ~/.bash_profile file
+  echo i.e.;  
+  echo export WINDOWS_PATH_PARTS=/c/WINDOWS/system32:/c/WINDOWS:/c/WINDOWS/System32/Wbem:/c/WINDOWS/System32/WindowsPowerShell/v1.0
+  echo
+  echo Then you can import those in this script with commands like
+  echo export PATH=$WINDOWS_PATH_PARTS
+  echo
+  echo Usage After Customization
+  echo --profile -p the name of the profile you want to use
+  echo --trial -t simply echo the new PATH do NOT set it
+  echo --verbose -v log extra stuff
+  echo
+  echo NOTE if you run this from GitBash it will NOT overwrite your Windows Paths, so they can be setup as a default
+  echo for when your GitBash terminal opens!
+  echo
+  exit 0
+fi
+
+WIN_MIN_DEFAULT=/c/WINDOWS/system32:/c/WINDOWS:/c/WINDOWS/System32/Wbem:/c/WINDOWS/System32/WindowsPowerShell/v1.0
+NODEJS_25=/c/yourNodeJs25Path
+
+##
+## Customize your profiles here
+##
+case $profile in
+  "winMin")
+    if [[ $trial == "true" ]]; then
+      echo new PATH would be;
+      echo $WIN_MIN_DEFAULT
+      exit 0
+    fi
+    export PATH=$WIN_MIN_DEFAULT
+  ;;
+  "node25")
+    if [[ $trial == "true" ]]; then
+      echo new PATH would be;
+      echo $WIN_MIN_DEFAULT:$NODEJS_25
+      exit 0
+    fi
+    export PATH=$WIN_MIN_DEFAULT:$NODEJS_25
+  ;;
+esac
